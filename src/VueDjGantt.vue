@@ -210,10 +210,38 @@
 import moment from "moment";
 
 const colHeight = 38;
+const WEEK_LONG = 604800000;
 const DAY_LONG = 86400000;
 const HOUR_LONG = 3600000;
 
 const zoomParams = {
+  5: {
+    slot: WEEK_LONG,
+    width: 30,
+    line: true,
+    label: [
+      { str: "WW", size: 13 },
+    ],
+    calendar: "MMMM YYYY",
+  },
+  6: {
+    slot: WEEK_LONG,
+    width: 70,
+    line: true,
+    label: [
+      { str: "WW", size: 13 },
+    ],
+    calendar: "MMMM YYYY",
+  },
+  7: {
+    slot: WEEK_LONG,
+    width: 160,
+    line: true,
+    label: [
+      { str: "WW", size: 13 },
+    ],
+    calendar: "MMMM YYYY",
+  },
   8: {
     slot: DAY_LONG,
     width: 21,
@@ -405,7 +433,7 @@ export default {
           this.scrollX(~~Math.max(0, ((o1 * w2) / w1) - halfDataWidth));
         }
 
-        if (ev.deltaY > 0 && this.zoom > 8) {
+        if (ev.deltaY > 0 && this.zoom > 5) {
           zoom(-1);
         }
 
@@ -644,7 +672,7 @@ export default {
             zoom: zoomParams[this.zoom],
           })
 
-          let current = slotPeriod == DAY_LONG ? from.month() : from.day();
+          let current = slotPeriod == HOUR_LONG ? from.day() : from.month();
 
           if (current != calendarRef) {
             calendarRef = current;
@@ -659,7 +687,12 @@ export default {
           }
         }
 
-        from.add(1, slotPeriod == DAY_LONG ? "days" : "hours");
+        let typeOfAdd = "days";
+        if(slotPeriod != DAY_LONG) {
+          typeOfAdd = slotPeriod == WEEK_LONG ? "weeks" : "hours";
+        }
+
+        from.add(1, typeOfAdd);
         offset += slotWidth;
       }
 
